@@ -28,7 +28,7 @@
 
 #include <inttypes.h>
 #include <Wire.h>
-#include <wiring.h>
+#include <Arduino.h>
 #include <avr/pgmspace.h>
 #include "HardwareSerial.h"
 #include "LibCompass.h"
@@ -77,14 +77,14 @@ float LibCompass::GetHeading(void) {
     long counter;
 
     Wire.beginTransmission(hmc6352_Address);
-    Wire.send(hmc6352_GetData);
+    Wire.write(hmc6352_GetData);
     Wire.endTransmission();
     delay(8); //6000 microseconds minimum 6 ms
 
     counter = millis();
     Wire.requestFrom(hmc6352_Address, 2);
     while(Wire.available() && (j < 2) ) {
-        data[j] = Wire.receive();
+        data[j] = Wire.read();
         j++;
 
         //Timeout check
@@ -138,7 +138,7 @@ bool LibCompass::Calibrate(void) {
 
     //Enter Cal mode
     Wire.beginTransmission(hmc6352_Address);
-    Wire.send(hmc6352_EnterCal);
+    Wire.write(hmc6352_EnterCal);
     Wire.endTransmission();
 
     delay(3000); //give them some time
@@ -157,7 +157,7 @@ bool LibCompass::Calibrate(void) {
 
     //Exit Cal Mode
     Wire.beginTransmission(hmc6352_Address);
-    Wire.send(hmc6352_ExitCal);
+    Wire.write(hmc6352_ExitCal);
     Wire.endTransmission();
 
     strcpy_P(out, PSTR("Done."));
@@ -173,7 +173,7 @@ bool LibCompass::Calibrate(void) {
  **********************************************************/
 void LibCompass::Sleep(void) {
     Wire.beginTransmission(hmc6352_Address);
-    Wire.send(hmc6352_Sleep); //S enter sleep mode
+    Wire.write(hmc6352_Sleep); //S enter sleep mode
     Wire.endTransmission();
 }
 
@@ -183,7 +183,7 @@ void LibCompass::Sleep(void) {
  **********************************************************/
 void LibCompass::Wake(void) {
     Wire.beginTransmission(hmc6352_Address);
-    Wire.send(hmc6352_Wakeup); //W wake up exit sleep mode
+    Wire.write(hmc6352_Wakeup); //W wake up exit sleep mode
     Wire.endTransmission();
 }
 
